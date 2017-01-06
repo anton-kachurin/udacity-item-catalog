@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Login to Material Design Resource Catalog</title>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js">
+    </script>
+    <script src="//apis.google.com/js/platform.js?onload=start"> </script>
+  </head>
+  <body>
+    <div id="google-signin">
+      <span class="g-signin"
+        data-scope="openid email"
+        data-clientid="{{client_id}}"
+        data-redirecturi="{{redirect_uri}}"
+        data-accesstype="offline"
+        data-cookiepolicy="single_host_origin"
+        data-callback="googleSignInCallback"
+        data-approvalprompt="force">
+      </span>
+    </div>
+    <div id="google-result"></div>
+
+    <script>
+      function googleSignInCallback(authResult){
+        console.log(authResult)
+        var error = authResult['error'];
+        var code = authResult['code'];
+        if(code){
+          $('#google-signin').hide();
+
+          $.ajax({
+            type: 'POST',
+            url: '/gconnect?state={{state_str}}',
+            processData: false,
+            contentType: 'application/octet-stream; charset=utf-8',
+            data: code
+          }).done(function(result){
+            $('#google-result').text('signed in with google successfully');
+          })
+        }
+        if(error){
+          $('#google-result').text('failed to signin with google: ' + error);
+        }
+      }
+    </script>
+  </body>
+</html>

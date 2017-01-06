@@ -2,3 +2,4 @@
 Vagrantfile
 catalog.db
 *.pyc
+client_secrets.json
