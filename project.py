@@ -231,4 +231,4 @@ def delete_item(category_label, item_label):
 if __name__ == '__main__':
     app.secret_key = 'j9in938j2-fin9348u-r2jefw'
     app.debug = True
-    app.run(host='0.0.0.0', port=8080)
+    app.run(host='0.0.0.0', port=5000)
