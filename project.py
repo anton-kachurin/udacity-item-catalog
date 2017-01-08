@@ -7,10 +7,14 @@ from oauth2client.client import FlowExchangeError
 
 from db_scheme import Category, Item
 
-SECRETS_FILE = 'client_secrets.json'
-client_secrets = json.loads(open(SECRETS_FILE, 'r').read())
-CLIENT_ID = client_secrets['web']['client_id']
+G_SECRETS_FILE = 'g_client_secrets.json'
+g_client_secrets = json.loads(open(G_SECRETS_FILE, 'r').read())
+G_CLIENT_ID = g_client_secrets['web']['client_id']
 REDIRECT_URI = 'postmessage'
+
+FB_SECRETS_FILE = 'fb_client_secrets.json'
+fb_client_secrets = json.loads(open(FB_SECRETS_FILE, 'r').read())
+FB_CLIENT_ID = fb_client_secrets['web']['app_id']
 
 app = Flask(__name__)
 
@@ -26,7 +30,9 @@ def show_login():
     session['state'] = state
 
     return render_template('login.html',
-                            state_str=state, client_id=CLIENT_ID,
+                            state_str=state,
+                            g_client_id=G_CLIENT_ID,
+                            fb_client_id=FB_CLIENT_ID,
                             redirect_uri = REDIRECT_URI)
 
 @app.route('/gconnect', methods=["POST"])
@@ -36,7 +42,7 @@ def gconnect():
 
     code = request.data
     try:
-        oauth_flow = flow_from_clientsecrets(SECRETS_FILE, scope='')
+        oauth_flow = flow_from_clientsecrets(G_SECRETS_FILE, scope='')
         oauth_flow.redirect_uri = REDIRECT_URI
         credentials = oauth_flow.step2_exchange(code)
     except FlowExchangeError:
@@ -55,7 +61,7 @@ def gconnect():
     if result['user_id'] != gplus_id:
         return json_result("Token's user ID doesn't match given user ID")
 
-    if result['issued_to'] != CLIENT_ID:
+    if result['issued_to'] != G_CLIENT_ID:
         return json_result("Token's client ID doesn't match given client ID")
 
     stored_access_token = session.get('access_token')
@@ -63,6 +69,7 @@ def gconnect():
     if gplus_id == stored_gplus_id and stored_access_token is not None:
         return json_result('User is already connected', 200)
 
+    session['provider'] = 'google'
     session['access_token'] = access_token
     session['gplus_id'] = gplus_id
 
@@ -79,7 +86,6 @@ def gconnect():
 
     return 'welcome, ' + session.get('username')
 
-@app.route('/gdisconnect')
 def gdisconnect():
     # only disconnect a connected user
     access_token = session.get('access_token')
@@ -97,11 +103,97 @@ def gdisconnect():
         del session['email']
         del session['access_token']
         del session['gplus_id']
+        del session['provider']
 
         return json_result('Successfully disconnected', 200)
     else:
         return json_result('Failed to revoke token for given user', 400)
 
+@app.route('/fbconnect', methods=['POST'])
+def fbconnect():
+    if request.args.get('state') != session.get('state'):
+        return json_result('Invalid state parameter')
+
+    access_token = request.data
+
+    app_secret = fb_client_secrets['web']['app_secret']
+    url = 'https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&client_secret=%s&fb_exchange_token=%s' % (
+        FB_CLIENT_ID, app_secret, access_token)
+    h = httplib2.Http()
+    result = h.request(url, 'GET')[1]
+
+    userinfo_url = "https://graph.facebook.com/v2.4/me"
+    # strip expire tag from access token
+    token = result.split("&")[0]
+
+    url = 'https://graph.facebook.com/v2.4/me?%s&fields=name,id,email' % token
+    h = httplib2.Http()
+    result = h.request(url, 'GET')[1]
+
+    data = json.loads(result)
+
+    session['provider'] = 'facebook'
+    session['username'] = data['name']
+    session['email'] = data['email']
+    session['fb_id'] = data['id']
+
+    # Strip out the information before the equals sign in our token
+    stored_token = token.split("=")[1]
+    session['access_token'] = stored_token
+
+    # Get user picture
+    url = 'https://graph.facebook.com/v2.4/me/picture?%s&redirect=0&height=200&width=200' % token
+    h = httplib2.Http()
+    result = h.request(url, 'GET')[1]
+    data = json.loads(result)
+
+    session['picture'] = data["data"]["url"]
+
+    return 'welcome, ' + session.get('username')
+
+def fbdisconnect():
+    # Only disconnect a connected user.
+    fb_id = session.get('fb_id')
+    access_token = session.get('access_token')
+
+    if fb_id is None:
+        return json_result('Current user is not connected')
+
+    url = 'https://graph.facebook.com/%s/permissions?access_token=%s' % (fb_id, access_token)
+    h = httplib2.Http()
+    result = h.request(url, 'DELETE')[1]
+
+    data = json.loads(result)
+
+    if 'success' in data and data['success'] == True:
+        del session['username']
+        del session['picture']
+        del session['email']
+        del session['access_token']
+        del session['fb_id']
+        del session['provider']
+
+        return json_result('Successfully disconnected', 200)
+    else:
+        return json_result('Failed to revoke token for given user', 400)
+
+
+@app.route('/disconnect')
+def disconnect():
+    if 'provider' in session:
+        provider = session.get('provider')
+
+        if provider == 'facebook':
+            return fbdisconnect()
+
+        elif provider == 'google':
+            return gdisconnect()
+
+        else:
+            return json_result('Internal error', 500)
+
+    else:
+        return json_result('Current user is not connected')
 
 @app.route('/')
 def redirect_to_main():

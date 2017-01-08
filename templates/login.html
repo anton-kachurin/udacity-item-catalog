@@ -9,19 +9,6 @@
     <script src="//apis.google.com/js/platform.js?onload=start"> </script>
   </head>
   <body>
-    <div id="google-signin">
-      <span class="g-signin"
-        data-scope="openid email"
-        data-clientid="{{client_id}}"
-        data-redirecturi="{{redirect_uri}}"
-        data-accesstype="offline"
-        data-cookiepolicy="single_host_origin"
-        data-callback="googleSignInCallback"
-        data-approvalprompt="force">
-      </span>
-    </div>
-    <div id="google-result"></div>
-
     <script>
       function googleSignInCallback(authResult){
         console.log(authResult)
@@ -45,5 +32,87 @@
         }
       }
     </script>
+
+    <script>
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId: {{fb_client_id}},
+          cookie: true,  // enable cookies to allow the server to access
+                         // the session
+          xfbml: true, //  parse social plugins on this page
+          version: 'v2.4' // use version 2.2
+        });
+      };
+      // Load the SDK asynchronously
+      (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));
+
+      // Here we run a very simple test of the Graph API after login is
+      // successful.  See statusChangeCallback() for when this call is made.
+      function sendTokenToServer(response) {
+        if(response.status != 'connected'){
+          $('#fb-result').html('failed to signin with fb');
+          return ;
+        }
+        var access_token = response.authResponse.accessToken;
+        console.log(access_token)
+        console.log('Welcome!  Fetching your information.... ');
+        FB.api('/me', function(response) {
+          console.log('Successful login for: ' + response.name);
+          $.ajax({
+            type: 'POST',
+            url: '/fbconnect?state={{state_str}}',
+            processData: false,
+            data: access_token,
+            contentType: 'application/octet-stream; charset=utf-8',
+            success: function(result) {
+              // Handle or verify the server response if necessary.
+              if (result) {
+                $('#fb-result').html('Login successfully!</br>'+ result);
+              }
+              else {
+                $('#fb-result').html('Failed to make a server-side call. Check your configuration and console.');
+              }
+            }
+          });
+        });
+      }
+
+      function checkLoginState(){
+        FB.getLoginStatus(function(response) {
+          sendTokenToServer(response);
+        });
+      }
+
+    </script>
+
+    <div id="google-signin">
+      <span class="g-signin"
+        data-scope="openid email"
+        data-clientid="{{g_client_id}}"
+        data-redirecturi="{{redirect_uri}}"
+        data-accesstype="offline"
+        data-cookiepolicy="single_host_origin"
+        data-callback="googleSignInCallback"
+        data-approvalprompt="force">
+      </span>
+    </div>
+    <div id="google-result"></div>
+
+    <div class="fb-login-button"
+         data-max-rows="1"
+         data-size="large"
+         data-show-faces="false"
+         data-auto-logout-link="false"
+         scope="public_profile,email"
+         onlogin="checkLoginState();">
+    </div>
+    <div id="fb-result"></div>
+
   </body>
 </html>

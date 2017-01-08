@@ -2,4 +2,5 @@
 Vagrantfile
 catalog.db
 *.pyc
-client_secrets.json
+fb_client_secrets.json
+g_client_secrets.json
