@@ -248,27 +248,27 @@ def show_catalog():
     ]
     return render_template('catalog.html', categories=categories)
 
-@app.route('/catalog/<string:category_label>')
-def show_category(category_label):
-    return 'some category selected with name ' + category_label
+@app.route('/catalog/<string:category_path>')
+def show_category(category_path):
+    return 'some category selected with name ' + category_path
 
-@app.route('/catalog/<string:category_label>/<string:item_label>')
-def show_item(category_label, item_label):
+@app.route('/catalog/<string:category_path>/<string:item_label>')
+def show_item(category_path, item_label):
     return 'show some item on the page'
 
-@app.route('/catalog/<string:category_label>/add',
+@app.route('/catalog/<string:category_path>/add',
            methods=['GET', 'POST'])
-def add_item(category_label):
+def add_item(category_path):
     return 'item creation page'
 
-@app.route('/catalog/<string:category_label>/<string:item_label>/edit',
+@app.route('/catalog/<string:category_path>/<string:item_label>/edit',
            methods=['GET', 'POST'])
-def edit_item(category_label, item_label):
+def edit_item(category_path, item_label):
     return 'edit some item'
 
-@app.route('/catalog/<string:category_label>/<string:item_label>/delete',
+@app.route('/catalog/<string:category_path>/<string:item_label>/delete',
            methods=['GET', 'POST'])
-def delete_item(category_label, item_label):
+def delete_item(category_path, item_label):
     return 'delete some item'
 
 
