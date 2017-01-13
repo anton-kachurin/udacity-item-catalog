@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Material Design Resource Catalog</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!-- JS libraries-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+        <!-- normalize.css -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" media="screen"
+              href="{{url_for('static', filename='base.css')}}">
+        <link rel="stylesheet" media="screen"
+              href="{{url_for('static', filename='responsive.css')}}">
+        <link rel="stylesheet" media="screen"
+              href="{{url_for('static', filename='material_text.css')}}">
+    </head>
+    <body>
+        <div id="page-wrap">
+            <main role="main">
+                {% block content %}
+                {% endblock %}
+            </main>
+            <div id="push"></div>
+        </div>
+
+        <div id="footer">
+            <hr>
+            <p>
+                Anton Kachurin, 2016
+            </p>
+            <p class="no-bottom-margin">
+                Built with
+            </p>
+        </div>
+
+        <!-- Custom JS -->
+        <script src="{{url_for('static', filename='script.js')}}"></script>
+        <script src="{{url_for('static', filename='material_text.js')}}"></script>
+
+    </body>
+</html>

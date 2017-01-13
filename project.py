@@ -177,9 +177,9 @@ def fbdisconnect():
     else:
         return json_result('Failed to revoke token for given user', 400)
 
-
-@app.route('/disconnect')
+@app.route('/disconnect', methods=["GET", "POST"])
 def disconnect():
+    # TODO: add confirmation page
     if 'provider' in session:
         provider = session.get('provider')
 
@@ -201,8 +201,52 @@ def redirect_to_main():
 
 @app.route('/catalog')
 def show_catalog():
-    categories = Category.get_all()
-    return str(len(categories))
+    #categories = Category.get_all()
+    categories = [
+        {
+            'image': 'youtube.png',
+            'title': 'YouTube Videos',
+            'initial': '',
+            'color': '#BA2B2A',
+            'path': 'youtube-videos'
+        },
+        {
+            'image': 'dribbble.png',
+            'title': 'Dribbble Arts',
+            'initial': '',
+            'color': '#E94C89',
+            'path': 'dribbble-arts'
+        },
+        {
+            'image': '',
+            'title': 'Icons',
+            'initial': 'i',
+            'color': '#ffd180',
+            'path': 'icons'
+        },
+        {
+            'image': '',
+            'title': 'Guidelines',
+            'initial': 'g',
+            'color': '#ff5722',
+            'path': 'guidelines'
+        },
+        {
+            'image': '',
+            'title': 'Colors',
+            'initial': 'c',
+            'color': '#cddc39',
+            'path': 'colors'
+        },
+        {
+            'image': '',
+            'title': 'Frameworks',
+            'initial': 'f',
+            'color': '#9c27b0',
+            'path': 'frameworks'
+        },
+    ]
+    return render_template('catalog.html', categories=categories)
 
 @app.route('/catalog/<string:category_label>')
 def show_category(category_label):

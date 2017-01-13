@@ -1,0 +1,25 @@
+/* default styling for mobile devices */
+.category-wrapper{
+  width: 48%;
+  margin: 32px auto;
+  display: inline-block;
+}
+
+/* tablets */
+@media screen and (min-width: 426px) {
+
+  .category-wrapper {
+    width: 31%;
+  }
+
+}
+
+/* laptops and bigger */
+@media screen and (min-width: 768px) {
+
+  body {
+    width: 768px;
+    margin: auto;
+  }
+
+}
