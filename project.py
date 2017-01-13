@@ -248,13 +248,17 @@ items = [
     {
         'image': 'https://d13yacurqjgara.cloudfront.net/users/30252/screenshots/1790652/google-dribbble_teaser.png',
         'title': 'Google Search - redesign attempt',
-        'label': 'google-search-redesign-attempt'
+        'label': 'google-search-redesign-attempt',
+        'text': "Designer Aurelien Salomon imagined what Google search would look like if it were redesigned using Google's own Material Design language.\nGone is Google search's iconic sparseness, and in its place is the colorful, beautifully animated UX of Android L, Android Wear, and other Google products.",
+        'author': 'Aurelien Salomon',
+        'source': 'https://dribbble.com/shots/1790652-Google-Material-exploration'
     },
 ]
 
 @app.route('/catalog')
 def show_catalog():
     #categories = Category.get_all()
+
     return render_template('catalog.html', categories=categories)
 
 @app.route('/catalog/<string:category_path>')
@@ -264,8 +268,14 @@ def show_category(category_path):
     return render_template('items.html', category=category, items=items)
 
 @app.route('/catalog/<string:category_path>/<string:item_label>')
-def show_item(category_path, item_label):
-    return 'show some item on the page'
+def show_article(category_path, item_label):
+    category = categories[1]
+    item =  items[0]
+
+    item['initial'] = item['text'][:1]
+    item['text'] = item['text'][1:]
+
+    return render_template('article.html', category=category, item=item)
 
 @app.route('/catalog/<string:category_path>/add',
            methods=['GET', 'POST'])

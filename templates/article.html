@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="back-button-wrapper">
+  <a href="/catalog/{{category.path}}">
+    <div class="back-button">
+      Go back to {{category.title}}
+    </div>
+  </a>
+</div>
+
+<div class="article-wrapper">
+  <article class="article">
+      <header class="article-title">
+        {{item.title}}
+      </header>
+
+      <div class="article-author">
+        <span class="subtitle">Author: </span>
+        {{item.author}}
+      </div>
+
+      <div class="article-source">
+        <span class="subtitle">Source: </span>
+        <a target="_blank" href="{{item.source}}">{{item.source}}</a>
+      </div>
+
+      <div class="article-text">
+        <div class="initial">
+          <div class="material">{{item.initial}}</div>
+        </div>
+        {{item.text}}
+      </div>
+  </article>
+</div>
+
+{% endblock %}

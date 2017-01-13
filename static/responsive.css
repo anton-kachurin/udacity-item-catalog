@@ -5,11 +5,19 @@
   display: inline-block;
 }
 
+.article .article-title {
+  font-size: 32px;
+}
+
 /* tablets */
 @media screen and (min-width: 426px) {
 
   .category-wrapper, .item-wrapper {
     width: 31%;
+  }
+
+  .article .article-title {
+    font-size: 44px;
   }
 
 }
