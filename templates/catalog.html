@@ -7,7 +7,10 @@
     <article class="category">
       <a href="/catalog/{{category.path}}">
         <div class="header-img"
-             style="background-color: {{category.color}}; background-image: url({{url_for('static', filename="img/"+category.image)}})">
+             style="
+              background-color: {{category.color}};
+              background-image:
+                url({{url_for('static', filename='img/' + category.image)}})">
           <div class="material centered" scale="0.5">{{category.initial}}</div>
         </div>
         <header class="category-title">
