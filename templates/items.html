@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% for item in items %}
+  <div class="item-wrapper">
+    <article class="item">
+      <a class="item-link" href="/catalog/{{category.path}}/{{item.label}}">
+        <div class="header-img"
+             style="background-image: url({{item.image}})">
+        </div>
+        <header class="item-title">
+          {{item.title}}
+        </header>
+      </a>
+    </article>
+  </div>
+{% endfor %}
+
+{% endblock %}

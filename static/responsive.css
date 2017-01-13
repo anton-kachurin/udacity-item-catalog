@@ -1,5 +1,5 @@
 /* default styling for mobile devices */
-.category-wrapper{
+.category-wrapper, .item-wrapper {
   width: 48%;
   margin: 32px auto;
   display: inline-block;
@@ -8,7 +8,7 @@
 /* tablets */
 @media screen and (min-width: 426px) {
 
-  .category-wrapper {
+  .category-wrapper, .item-wrapper {
     width: 31%;
   }
 
