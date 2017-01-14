@@ -4,3 +4,4 @@ catalog.db
 *.pyc
 fb_client_secrets.json
 g_client_secrets.json
+catalog.db-journal
