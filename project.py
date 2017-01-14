@@ -35,8 +35,6 @@ def before_request():
     if 'email' in session:
         # user is logged in, use its email to get user from db
         g.current_user = create_or_get_user()
-        if not g.current_user.username:
-            g.current_user.username = 'asdf qwerweqrw'
     else:
         g.current_user = None
 
