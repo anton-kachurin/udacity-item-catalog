@@ -26,6 +26,35 @@
     </head>
     <body>
         <div id="page-wrap">
+            <header id="main-header" class="default-primary-color">
+              {% if not g.current_user: %}
+              <div class="right-side">
+                <a class="login-button text-primary-color"
+                   href="/login">
+                  Login
+                </a>
+              </div>
+              {% endif %}
+              {% if g.current_user: %}
+                <div class="left-side">
+                  <img src="{{g.current_user.picture}}"
+                       alt="User profile picture"
+                       class="picture">
+                  <div class="username text-primary-color">
+                    {{g.current_user.username}}
+                  </div>
+                  <div class="email light-primary-text">
+                    {{g.current_user.email}}
+                  </div>
+                </div>
+                <div class="right-side">
+                  <a class="logout-button text-primary-color"
+                    href="/logout">
+                   Logout
+                  </a>
+                </div>
+              {% endif %}
+            </header>
             <main role="main">
                 {% block content %}
                 {% endblock %}

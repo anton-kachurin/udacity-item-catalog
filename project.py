@@ -1,11 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for, flash,\
-                  jsonify, session, make_response
+                  jsonify, session, make_response, g
 import random, string, json, httplib2, requests
 
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
 
-from db_scheme import Category, Item
+from db_scheme import Category, Item, User
 
 G_SECRETS_FILE = 'g_client_secrets.json'
 g_client_secrets = json.loads(open(G_SECRETS_FILE, 'r').read())
@@ -23,6 +23,22 @@ def json_result(message, code=401):
     response.headers['Content-Type'] = 'application/json'
 
     return response
+
+def create_or_get_user():
+    # User.create will make sure not to create duplicate entry in db, see source
+    return User.create(username=session.get('username'),
+                       email=session.get('email'),
+                       picture=session.get('picture'))
+
+@app.before_request
+def before_request():
+    if 'email' in session:
+        # user is logged in, use its email to get user from db
+        g.current_user = create_or_get_user()
+        if not g.current_user.username:
+            g.current_user.username = 'asdf qwerweqrw'
+    else:
+        g.current_user = None
 
 @app.route('/login')
 def show_login():
