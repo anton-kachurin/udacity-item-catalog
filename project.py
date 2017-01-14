@@ -81,6 +81,7 @@ def gconnect():
     stored_access_token = session.get('access_token')
     stored_gplus_id = session.get('gplus_id')
     if gplus_id == stored_gplus_id and stored_access_token is not None:
+        session['access_token'] = access_token
         return json_result('User is already connected', 200)
 
     session['provider'] = 'google'
@@ -191,7 +192,7 @@ def fbdisconnect():
     else:
         return json_result('Failed to revoke token for given user', 400)
 
-@app.route('/disconnect', methods=["GET", "POST"])
+@app.route('/logout', methods=["POST"])
 def disconnect():
     # TODO: add confirmation page
     if 'provider' in session:
