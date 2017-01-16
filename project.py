@@ -192,6 +192,20 @@ def fbdisconnect():
     else:
         return json_result('Failed to revoke token for given user', 400)
 
+@app.route('/force_logout', methods=["POST"])
+def force_logout():
+    del session['username']
+    del session['picture']
+    del session['email']
+    del session['access_token']
+    del session['provider']
+    if 'fb_id' in session:
+        del session['fb_id']
+    if 'gplus_id' in session:
+        del session['gplus_id']
+        
+    return json_result('Forced to disconnect', 200)
+
 @app.route('/logout', methods=["POST"])
 def disconnect():
     # TODO: add confirmation page
