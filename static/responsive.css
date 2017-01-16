@@ -9,8 +9,16 @@
   font-size: 32px;
 }
 
+.navigation .description {
+  display: none;
+}
+
 /* tablets */
 @media screen and (min-width: 426px) {
+
+  .navigation .description {
+    display: inline;
+  }
 
   .category-wrapper, .item-wrapper {
     width: 31%;

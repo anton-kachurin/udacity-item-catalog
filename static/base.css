@@ -175,21 +175,28 @@ body {
   box-shadow: 0 6px 20px #696969;
 }
 
-.back-button-wrapper {
+.back-button-wrapper, .editor-button-wrapper {
   margin: 16px;
 }
 
-.back-button-wrapper a {
-  text-decoration: none;
-  color: #0288D1;
+.back-button, .editor-button {
+  padding: 16px;
 }
 
-.back-button {
-  text-align: center;
-  width: 200px;
-  background-color: #B3E5FC;
-  margin: auto;
-  padding: 16px;
+.back-button-wrapper {
+  float: left;
+}
+
+.editor-button-wrapper {
+  float: right;
+}
+
+.navigation a {
+  text-decoration: none;
+}
+
+.clear-fix {
+  clear: both;
 }
 
 .category, .category .header-img, .item, .item .header-img {

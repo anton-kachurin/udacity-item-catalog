@@ -2,15 +2,18 @@
 
 {% block content %}
 
-<nav class="back-button-wrapper">
-  <a href="/catalog/{{category.path}}">
-    <div class="back-button">
-      <i class="material-icons vertical-align-middle">arrow_back</i>
-      <span class="vertical-align-middle">
-        To {{category.title}}
-      </span>
-    </div>
-  </a>
+<nav class="navigation">
+  <div class="back-button-wrapper">
+    <a href="/catalog/{{category.path}}">
+      <div class="back-button light-primary-color dark-primary-text">
+        <i class="material-icons vertical-align-middle">arrow_back</i>
+        <span class="description vertical-align-middle">
+          To {{category.title}}
+        </span>
+      </div>
+    </a>
+  </div>
+  <div class="clear-fix"></div>
 </nav>
 
 <div class="article-wrapper">
