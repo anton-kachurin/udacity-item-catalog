@@ -1,7 +1,7 @@
 /* default styling for mobile devices */
 .category-wrapper, .item-wrapper {
-  width: 48%;
-  margin: 32px auto;
+  width: 50%%;
+  margin: 32px 0;
   display: inline-block;
 }
 
@@ -21,7 +21,7 @@
   }
 
   .category-wrapper, .item-wrapper {
-    width: 31%;
+    width: 33.333%;
   }
 
   .article .article-title {

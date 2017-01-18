@@ -88,8 +88,18 @@ body {
   vertical-align: middle;
 }
 
+.flex-list {
+  display: flex;
+  flex-flow: row wrap;
+  margin-right: -32px;
+}
+
+.article-wrapper {
+  margin-right: -32px;
+}
+
 .category-wrapper, .item-wrapper, .article-wrapper {
-  padding: 0 16px;
+  padding: 0 32px 0 0;
 }
 
 .category .header-img, .item .header-img {
