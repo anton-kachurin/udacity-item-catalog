@@ -91,15 +91,15 @@ body {
 .flex-list {
   display: flex;
   flex-flow: row wrap;
-  margin-right: -32px;
+  margin-left: -32px;
 }
 
 .article-wrapper {
-  margin-right: -32px;
+  margin-left: -32px;
 }
 
 .category-wrapper, .item-wrapper, .article-wrapper {
-  padding: 0 32px 0 0;
+  padding: 0 0 0 32px;
 }
 
 .category .header-img, .item .header-img {
@@ -130,7 +130,6 @@ body {
 }
 
 .item .item-title {
-  font-size: 16px;
   position: relative;
   z-index: 2;
   background: white;

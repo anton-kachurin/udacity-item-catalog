@@ -1,6 +1,6 @@
 /* default styling for mobile devices */
 .category-wrapper, .item-wrapper {
-  width: 50%%;
+  width: 50%;
   margin: 32px 0;
   display: inline-block;
 }
@@ -11,6 +11,10 @@
 
 .navigation .description {
   display: none;
+}
+
+.item .item-title {
+  font-size: 14px;
 }
 
 /* tablets */
@@ -26,6 +30,10 @@
 
   .article .article-title {
     font-size: 44px;
+  }
+
+  .item .item-title {
+    font-size: 16px;
   }
 
 }
