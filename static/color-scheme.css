@@ -11,6 +11,8 @@ materialpalette.com/light-blue/yellow */
 .divider-color         { border-color: #BDBDBD; }
 
 .light-primary-text    { color: #B3E5FC; }
-.dark-primary-text    { color: #0288D1; }
+.dark-primary-text     { color: #0288D1; }
 .accent-text           { color: #FFEB3B; }
 .background-color      { background-color: #FFFFFF; }
+
+.warning-color         { background-color: #FF4081; }

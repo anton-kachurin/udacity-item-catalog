@@ -9,3 +9,9 @@ $('.logout-button').click(function(){
     });
   });
 });
+
+$('.options-panel .options-button').on('click', function(event){
+  var target = $(event.target).parents('.options-panel');
+  $('.options-panel.visible').not(target).removeClass('visible');
+  target.toggleClass('visible');
+});

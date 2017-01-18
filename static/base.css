@@ -134,9 +134,54 @@ body {
   position: relative;
   z-index: 2;
   background: white;
-  color: black;
+  box-shadow: 0 1px 5px #696969;
   padding: 16px;
-  text-align: center;
+}
+
+.item .options-button,
+.item .delete-button,
+.item .edit-button {
+  position: absolute;
+  top: -28px;
+  right: 0;
+  box-sizing: content-box;
+  padding: 8px;
+  margin: 8px;
+  width: 24px;
+  user-select: none;
+  cursor: pointer;
+}
+
+.item .options-button {
+  z-index: 5;
+  height: 24px;
+  border-radius: 100%;
+}
+
+.item .delete-button,
+.item .edit-button {
+  z-index: 4;
+  opacity: 0;
+  height: 0;
+}
+
+.item .options-panel.visible .delete-button,
+.item .options-panel.visible .edit-button {
+  opacity: 1;
+  height: 25px;
+}
+
+.item .options-panel.visible .delete-button {
+  top: -108px;
+}
+
+.item .options-panel.visible .edit-button {
+  top: -68px;
+}
+
+.item .options-panel.visible .options-button {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
 }
 
 .item .item-link {
@@ -209,7 +254,8 @@ body {
   clear: both;
 }
 
-.category, .category .header-img, .item, .item .header-img {
+.category, .category .header-img, .item, .item .header-img,
+.item .options-button, .item .delete-button, .item .edit-button {
   -webkit-transition: all .3s ease-out;
   -moz-transition: all 0.3s ease-out;
   -ms-transition: all 0.3s ease-out;

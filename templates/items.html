@@ -28,16 +28,32 @@
 
 <div class="flex-list">
 {% for item in items %}
+  {% set link = '/catalog/' + category.path + '/' + item.label %}
   <div class="item-wrapper">
     <article class="item">
-      <a class="item-link" href="/catalog/{{category.path}}/{{item.label}}">
+      <a class="item-link" href="{{link}}">
         <div class="header-img"
              style="background-image: url({{item.image}})">
         </div>
-        <header class="item-title">
-          {{item.title}}
-        </header>
       </a>
+      <div class="item-title">
+        <a class="item-link" href="{{link}}">
+          <header class="primary-text-color">
+            {{item.title}}
+          </header>
+        </a>
+        <div class="options-panel">
+          <div class="options-button accent-color">
+            <i class="material-icons text-primary-color">more_vert</i>
+          </div>
+          <div class="delete-button warning-color">
+            <i class="material-icons text-primary-color">delete</i>
+          </div>
+          <div class="edit-button dark-primary-color">
+            <i class="material-icons text-primary-color">mode_edit</i>
+          </div>
+        </div>
+      </div>
     </article>
   </div>
 {% endfor %}
