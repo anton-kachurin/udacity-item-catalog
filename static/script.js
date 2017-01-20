@@ -15,3 +15,7 @@ $('.options-panel .options-button').on('click', function(event){
   $('.options-panel.visible').not(target).removeClass('visible');
   target.toggleClass('visible');
 });
+
+$(document).ready(function(){
+  autosize($('textarea'));
+});

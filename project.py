@@ -203,7 +203,7 @@ def force_logout():
         del session['fb_id']
     if 'gplus_id' in session:
         del session['gplus_id']
-        
+
     return json_result('Forced to disconnect', 200)
 
 @app.route('/logout', methods=["POST"])
@@ -309,7 +309,16 @@ def show_article(category_path, item_label):
 @app.route('/catalog/<string:category_path>/add',
            methods=['GET', 'POST'])
 def add_item(category_path):
-    return 'item creation page'
+    category = categories[1]
+    fields = [
+        {'name': 'title', 'label': 'Title'},
+        {'name': 'author', 'label': 'Author'},
+        {'name': 'source', 'label': 'Source URL'},
+        {'name': 'image', 'label': 'Illustration URL'},
+        {'name': 'text', 'label': 'Content', 'textarea': 1}
+    ]
+    
+    return render_template('add.html', fields=fields, category=category)
 
 @app.route('/catalog/<string:category_path>/<string:item_label>/edit',
            methods=['GET', 'POST'])

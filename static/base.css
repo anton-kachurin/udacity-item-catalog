@@ -229,19 +229,24 @@ body {
   box-shadow: 0 6px 20px #696969;
 }
 
-.back-button-wrapper, .editor-button-wrapper {
+.back-button-wrapper, .editor-button-wrapper, .save-button-wrapper {
   margin: 16px;
 }
 
-.back-button, .editor-button {
+.back-button, .editor-button, .save-button {
   padding: 16px;
+}
+
+.save-button {
+  outline: none;
+  border: none;
 }
 
 .back-button-wrapper {
   float: left;
 }
 
-.editor-button-wrapper {
+.editor-button-wrapper, .save-button-wrapper {
   float: right;
 }
 

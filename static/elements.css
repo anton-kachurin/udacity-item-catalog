@@ -1,0 +1,90 @@
+/* material input field implementation inspired by
+https://scotch.io/tutorials/google-material-design-input-boxes-in-css3 */
+.group {
+  position: relative;
+  width: 100%;
+  padding: 28px 16px 8px 16px;
+}
+
+input, textarea {
+  font-size: 16px;
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 8px 4px 8px 4px;
+  border: none;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  word-break: break-word;
+}
+
+textarea {
+  resize: none;
+  overflow: hidden;
+}
+
+input:focus, textarea:focus {
+  outline: none;
+}
+
+label {
+  font-size: 16px;
+  font-weight: normal;
+  position: absolute;
+  pointer-events: none;
+  margin-left: 5px;
+  top: 38px;
+  transition: 0.2s ease all;
+  -moz-transition: 0.2s ease all;
+  -webkit-transition: 0.2s ease all;
+}
+
+input:focus ~ label, input:valid ~ label,
+textarea:focus ~ label, textarea:valid ~ label {
+  top: 16px;
+  font-size: 12px;
+}
+
+input:focus ~ label,
+textarea:focus ~ label {
+  color: inherit;
+}
+
+.bar-wrapper {
+  position: relative;
+}
+
+.bar {
+  position: absolute;
+  bottom: -2px;
+  display: block;
+  width: 100%;
+  margin: 0;
+}
+
+.bar:before, .bar:after {
+  content: '';
+  height: 2px;
+  width: 0;
+  bottom: 1px;
+  position: absolute;
+  background: inherit;
+  transition:0.2s ease all;
+  -moz-transition:0.2s ease all;
+  -webkit-transition:0.2s ease all;
+}
+
+.bar:before {
+  left: 50%;
+}
+
+.bar:after {
+  right: 50%;
+}
+
+input:focus ~ .bar-wrapper > .bar:before,
+input:focus ~ .bar-wrapper > .bar:after,
+textarea:focus ~ .bar-wrapper > .bar:before,
+textarea:focus ~ .bar-wrapper > .bar:after {
+  width: 50%;
+}
