@@ -201,6 +201,7 @@ body {
 
 .article .article-text .content::first-letter {
   font-size: 0;
+  margin: 1px;
 }
 
 .article-author, .article-source {
