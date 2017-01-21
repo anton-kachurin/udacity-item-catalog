@@ -228,51 +228,6 @@ def disconnect():
 def redirect_to_main():
     return redirect(url_for('show_catalog'))
 
-categories = [
-    {
-        'image': 'youtube.png',
-        'title': 'YouTube Videos',
-        'initial': '',
-        'color': '#BA2B2A',
-        'path': 'youtube-videos'
-    },
-    {
-        'image': 'dribbble.png',
-        'title': 'Dribbble Arts',
-        'initial': '',
-        'color': '#E94C89',
-        'path': 'dribbble-arts'
-    },
-    {
-        'image': '',
-        'title': 'Icons',
-        'initial': 'i',
-        'color': '#ffd180',
-        'path': 'icons'
-    },
-    {
-        'image': '',
-        'title': 'Guidelines',
-        'initial': 'g',
-        'color': '#ff5722',
-        'path': 'guidelines'
-    },
-    {
-        'image': '',
-        'title': 'Colors',
-        'initial': 'c',
-        'color': '#cddc39',
-        'path': 'colors'
-    },
-    {
-        'image': '',
-        'title': 'Frameworks',
-        'initial': 'f',
-        'color': '#9c27b0',
-        'path': 'frameworks'
-    },
-]
-
 items = [
     {
         'image': 'https://d13yacurqjgara.cloudfront.net/users/30252/screenshots/1790652/google-dribbble_teaser.png',
@@ -286,19 +241,19 @@ items = [
 
 @app.route('/catalog')
 def show_catalog():
-    #categories = Category.get_all()
+    categories = Category.get_all()
 
     return render_template('catalog.html', categories=categories)
 
 @app.route('/catalog/<string:category_path>')
 def show_category(category_path):
-    category = categories[1]
+    category = Category.get_one(category_path)
 
     return render_template('items.html', category=category, items=items)
 
 @app.route('/catalog/<string:category_path>/<string:item_label>')
 def show_article(category_path, item_label):
-    category = categories[1]
+    category = Category.get_one(category_path)
     item =  items[0]
 
     item['initial'] = item['text'][:1]
@@ -309,7 +264,7 @@ def show_article(category_path, item_label):
 @app.route('/catalog/<string:category_path>/add',
            methods=['GET', 'POST'])
 def add_item(category_path):
-    category = categories[1]
+    category = Category.get_one(category_path)
     fields = [
         {'name': 'title', 'label': 'Title'},
         {'name': 'author', 'label': 'Author'},
@@ -317,7 +272,7 @@ def add_item(category_path):
         {'name': 'image', 'label': 'Illustration URL'},
         {'name': 'text', 'label': 'Content', 'textarea': 1}
     ]
-    
+
     return render_template('add.html', fields=fields, category=category)
 
 @app.route('/catalog/<string:category_path>/<string:item_label>/edit',
