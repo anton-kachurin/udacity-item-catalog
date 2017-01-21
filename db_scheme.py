@@ -9,11 +9,11 @@ import re
 
 def latin_lower(s):
     """ Convert string to lower case,
-    replace all non-latin symbols with dashes,
+    replace all non-latin or non-digit symbols with dashes,
     deduplicate and trim dashes
     """
     result = s.lower()
-    result = re.sub("[^a-z]", '-', result)
+    result = re.sub("[^a-z0-9]", '-', result)
     result = re.sub("-+", '-', result)
     result = re.sub("^-", '', result)
     result = re.sub("-$", '', result)
