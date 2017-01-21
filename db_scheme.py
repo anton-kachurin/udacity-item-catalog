@@ -101,7 +101,7 @@ class Category(Base):
         existing = session.query(cls).filter(cls.path==path).first()
         if not existing:
             # TODO: throw 404 error
-            pass
+            return None
 
         return existing
 
@@ -117,6 +117,9 @@ class Item(Base):
 
     category_id = Column(Integer, ForeignKey('categories.id'))
     category = relationship(Category)
+
+    user_id = Column(Integer, ForeignKey('users.id'))
+    user = relationship(User)
 
     @hybrid_property
     def label(self):
@@ -142,7 +145,13 @@ class Item(Base):
         return obj
 
     @classmethod
-    def add(cls, category, item):
+    def add(cls, user, category, item):
+        if user:
+            item.user = user
+        else:
+            # TODO: throw 401 error
+            return None
+
         count = cls.count(category, item.label)
         if count:
             return 'An article with similar title already exists'
@@ -170,7 +179,7 @@ class Item(Base):
         existing = cls.query(category, label).first()
         if not existing:
             # TODO: throw 404 error
-            pass
+            return None
 
         return existing
 
