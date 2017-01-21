@@ -156,6 +156,9 @@ class Item(Base):
         if count:
             return 'An article with similar title already exists'
 
+        if item.label == 'add':
+            return 'Title can\'t be "add" or alike'
+
         item.category = category
         session.add(item)
         session.commit()

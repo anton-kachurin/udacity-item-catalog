@@ -262,6 +262,11 @@ body {
   clear: both;
 }
 
+.error-message {
+  text-align: center;
+  padding: 16px;
+}
+
 .category, .category .header-img, .item, .item .header-img,
 .item .options-button, .item .delete-button, .item .edit-button {
   -webkit-transition: all .3s ease-out;

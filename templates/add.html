@@ -16,16 +16,28 @@
   <div class="clear-fix"></div>
 </nav>
 
+{% if error %}
+<div class="error-message warning-color text-primary-color">
+  {{error}}
+</div>
+{% endif %}
+
 <form method="post">
   {% for field in fields %}
     {% set tag = 'input' %}
+    {% set value = field.value %}
+    {% set content = '' %}
     {% if field.textarea %}
       {% set tag = 'textarea' %}
+      {% set value = '' %}
+      {% set content = field.value %}
     {% endif %}
     <div class="group dark-primary-text">
-      <{{tag}} type="text" rows="1" name="{{field.name}}"
+      <{{tag}} type="text" rows="1"
+               name="{{field.name}}"
+               value="{{value}}"
                class="divider-color primary-text-color"
-               required></{{tag}}>
+               required>{{content}}</{{tag}}>
       <div class="bar-wrapper">
         <span class="bar dark-primary-color"></span>
       </div>
