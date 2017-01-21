@@ -196,7 +196,11 @@ body {
   font-size: 16px;
   padding: 16px;
   white-space: pre-line;
-  margin-top: -50px;
+  margin-top: -64px;
+}
+
+.article .article-text .content::first-letter {
+  font-size: 0;
 }
 
 .article-author, .article-source {
