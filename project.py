@@ -228,17 +228,6 @@ def disconnect():
 def redirect_to_main():
     return redirect(url_for('show_catalog'))
 
-items = [
-    {
-        'image': 'https://d13yacurqjgara.cloudfront.net/users/30252/screenshots/1790652/google-dribbble_teaser.png',
-        'title': 'Google Search - redesign attempt',
-        'label': 'google-search-redesign-attempt',
-        'text': "Designer Aurelien Salomon imagined what Google search would look like if it were redesigned using Google's own Material Design language.\nGone is Google search's iconic sparseness, and in its place is the colorful, beautifully animated UX of Android L, Android Wear, and other Google products.",
-        'author': 'Aurelien Salomon',
-        'source': 'https://dribbble.com/shots/1790652-Google-Material-exploration'
-    },
-]
-
 @app.route('/catalog')
 def show_catalog():
     categories = Category.get_all()
@@ -248,16 +237,14 @@ def show_catalog():
 @app.route('/catalog/<string:category_path>')
 def show_category(category_path):
     category = Category.get_one(category_path)
+    items = Item.get_all(category)
 
     return render_template('items.html', category=category, items=items)
 
 @app.route('/catalog/<string:category_path>/<string:item_label>')
 def show_article(category_path, item_label):
     category = Category.get_one(category_path)
-    item =  items[0]
-
-    item['initial'] = item['text'][:1]
-    item['text'] = item['text'][1:]
+    item = Item.get_one(category, item_label)
 
     return render_template('article.html', category=category, item=item)
 

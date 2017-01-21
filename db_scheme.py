@@ -109,32 +109,75 @@ class Item(Base):
     __tablename__ = 'items'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String(80), nullable=False)
-    label = Column(String(80), nullable=False)
-    description = Column(String(1000), nullable=False)
-    link = Column(String(1000), nullable=False)
+    title = Column(String(80), nullable=False)
+    author = Column(String(80), nullable=False)
+    source = Column(String(1000), nullable=False)
+    image = Column(String(1000), nullable=False)
+    text = Column(String(10*1024), nullable=False)
 
     category_id = Column(Integer, ForeignKey('categories.id'))
     category = relationship(Category)
+
+    @hybrid_property
+    def label(self):
+        return latin_lower(self.title)
+
+    @label.expression
+    def label(cls):
+        return func.latin_lower(cls.title)
+
+    @property
+    def initial(self):
+        return self.text[:1]
 
     @property
     def serialize(self):
         obj = {
             'id': self.id,
-            'name': self.name,
-            'label': self.label,
-            'description': self.description,
-            'link': self.link
+            'title': self.title,
+            'author': self.author,
+            'source': self.source,
+            'text': self.text
         }
         return obj
 
     @classmethod
+    def add(cls, category, item):
+        count = cls.count(category, item.label)
+        if count:
+            return 'An article with similar title already exists'
+
+        item.category = category
+        session.add(item)
+        session.commit()
+
+        return None
+
+    @classmethod
+    def query(cls, category, label=None):
+        result = session.query(cls).filter(cls.category==category)
+        if label:
+            result = result.filter(cls.label==label)
+
+        return result
+
+    @classmethod
     def get_all(cls, category):
-        pass
+        return cls.query(category).all()
 
     @classmethod
     def get_one(cls, category, label):
-        pass
+        existing = cls.query(category, label).first()
+        if not existing:
+            # TODO: throw 404 error
+            pass
+
+        return existing
+
+    @classmethod
+    def count(cls, category, label=None):
+        return cls.query(category, label).count()
+
 
 engine = create_engine('sqlite://', creator=engine_creator)
 
