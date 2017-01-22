@@ -268,6 +268,10 @@ body {
   padding: 16px;
 }
 
+.info-message {
+  text-align: center;
+}
+
 .category, .category .header-img, .item, .item .header-img,
 .item .options-button, .item .delete-button, .item .edit-button {
   -webkit-transition: all .3s ease-out;
