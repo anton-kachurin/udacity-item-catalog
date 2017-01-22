@@ -24,6 +24,53 @@ def json_result(message, code=401):
 
     return response
 
+def field_list():
+    return [
+        {'name': 'title', 'label': 'Title'},
+        {'name': 'author', 'label': 'Author'},
+        {'name': 'source', 'label': 'Source URL'},
+        {'name': 'image', 'label': 'Illustration URL'},
+        {'name': 'text', 'label': 'Content', 'textarea': 1}
+    ]
+
+def extend_fields_with_value(fields, title, author, source, image, text):
+    for field in fields:
+        if field['name'] == 'title':
+            field['value'] = title
+        if field['name'] == 'author':
+            field['value'] = author
+        if field['name'] == 'source':
+            field['value'] = source
+        if field['name'] == 'image':
+            field['value'] = image
+        if field['name'] == 'text':
+            field['value'] = text
+
+def is_url(url):
+    url = url.lower()
+    return url.startswith('http://') or url.startswith('https://')
+
+def check_request_fields(fields):
+    title = request.form.get('title')
+    author = request.form.get('author')
+    source = request.form.get('source')
+    image = request.form.get('image')
+    text = request.form.get('text')
+
+    extend_fields_with_value(fields=fields, title=title, author=author,
+                             source=source, image=image, text=text)
+
+    error = ''
+
+    if not title or not author or not text or not source or not image:
+        error = 'All fields are required'
+    if not is_url(image):
+        error = 'Please provide a valid image URL'
+    if not is_url(source):
+        error = 'Please provide a valid link to the original article'
+
+    return error
+
 def create_or_get_user():
     # User.create will make sure not to create duplicate entry in db, see source
     return User.create(username=session.get('username'),
@@ -251,48 +298,13 @@ def show_article(category_path, item_label):
 @app.route('/catalog/<string:category_path>/add',
            methods=['GET', 'POST'])
 def add_item(category_path):
-    def is_url(url):
-        url = url.lower()
-        return url.startswith('http://') or url.startswith('https://')
-
     category = Category.get_one(category_path)
-    fields = [
-        {'name': 'title', 'label': 'Title'},
-        {'name': 'author', 'label': 'Author'},
-        {'name': 'source', 'label': 'Source URL'},
-        {'name': 'image', 'label': 'Illustration URL'},
-        {'name': 'text', 'label': 'Content', 'textarea': 1}
-    ]
+    fields = field_list()
 
     if request.method == 'GET':
         return render_template('add.html', fields=fields, category=category)
     else:
-        title = request.form.get('title')
-        author = request.form.get('author')
-        source = request.form.get('source')
-        image = request.form.get('image')
-        text = request.form.get('text')
-
-        for field in fields:
-            if field['name'] == 'title':
-                field['value'] = title
-            if field['name'] == 'author':
-                field['value'] = author
-            if field['name'] == 'source':
-                field['value'] = source
-            if field['name'] == 'image':
-                field['value'] = image
-            if field['name'] == 'text':
-                field['value'] = text
-
-        error = ''
-
-        if not title or not author or not text or not source or not image:
-            error = 'All fields are required'
-        if not is_url(image):
-            error = 'Please provide a valid image URL'
-        if not is_url(source):
-            error = 'Please provide a valid link to the original article'
+        error = check_request_fields(fields)
 
         if error:
             return render_template('add.html', fields=fields,
@@ -316,7 +328,42 @@ def add_item(category_path):
 @app.route('/catalog/<string:category_path>/<string:item_label>/edit',
            methods=['GET', 'POST'])
 def edit_item(category_path, item_label):
-    return 'edit some item'
+    category = Category.get_one(category_path)
+    item = Item.get_one(category, item_label)
+    fields = field_list()
+
+    if request.method == 'GET':
+        title = item.title
+        author = item.author
+        source = item.source
+        image = item.image
+        text = item.text
+
+        extend_fields_with_value(fields=fields, title=title, author=author,
+                                 source=source, image=image, text=text)
+
+        return render_template('add.html', fields=fields, category=category)
+    else:
+        error = check_request_fields(fields)
+
+        if error:
+            return render_template('add.html', fields=fields,
+                                               category=category,
+                                               error=error)
+        else:
+            obj = {}
+            for field in fields:
+                obj[field['name']] = field['value']
+
+            error = item.edit(g.current_user, obj)
+
+            if error:
+                return render_template('add.html', fields=fields,
+                                                   category=category,
+                                                   error=error)
+            else:
+                return redirect(url_for('show_category',
+                                        category_path=category.path))
 
 @app.route('/catalog/<string:category_path>/<string:item_label>/delete',
            methods=['POST'])

@@ -197,6 +197,32 @@ class Item(Base):
 
         session.delete(self)
 
+    def edit(self, user, obj):
+        if self.user != user:
+            # TODO: throw 403 error
+            return None
+
+        future_label = latin_lower(obj['title'])
+        if future_label != self.label:
+
+            count = Item.count(self.category, future_label)
+            if count:
+                session.rollback()
+                return 'An article with similar title already exists'
+
+            if future_label == 'add':
+                session.rollback()
+                return 'Title can\'t be "add" or alike'
+
+        self.title = obj['title']
+        self.author = obj['author']
+        self.source = obj['source']
+        self.image = obj['image']
+        self.text = obj['text']
+
+        session.commit()
+
+        return None
 
 engine = create_engine('sqlite://', creator=engine_creator)
 
