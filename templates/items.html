@@ -46,7 +46,7 @@
             {{item.title}}
           </header>
         </a>
-        {% if g.current_user %}
+        {% if g.current_user and g.current_user.id == item.user.id %}
         <div class="options-panel">
           <div class="options-button accent-color">
             <i class="material-icons text-primary-color">more_vert</i>
