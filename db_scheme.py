@@ -190,6 +190,13 @@ class Item(Base):
     def count(cls, category, label=None):
         return cls.query(category, label).count()
 
+    def delete(self, user):
+        if self.user != user:
+            # TODO: throw 403 error
+            return None
+
+        session.delete(self)
+
 
 engine = create_engine('sqlite://', creator=engine_creator)
 

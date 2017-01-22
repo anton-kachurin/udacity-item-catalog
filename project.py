@@ -319,9 +319,13 @@ def edit_item(category_path, item_label):
     return 'edit some item'
 
 @app.route('/catalog/<string:category_path>/<string:item_label>/delete',
-           methods=['GET', 'POST'])
+           methods=['POST'])
 def delete_item(category_path, item_label):
-    return 'delete some item'
+    category = Category.get_one(category_path)
+    item = Item.get_one(category, item_label)
+    item.delete(g.current_user)
+
+    return json_result('deleted successfully', 200)
 
 
 if __name__ == '__main__':

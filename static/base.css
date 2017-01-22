@@ -187,6 +187,33 @@ body {
   text-decoration: none;
 }
 
+.item .hover-layer-confirm,
+.item .hover-layer-cancel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  z-index: 2;
+}
+
+.item .hover-layer-confirm {
+  top: 50%;
+}
+
+.item .hover-layer-cancel {
+  top: 0;
+}
+
+.item .hover-layer.visible .hover-layer-confirm,
+.item .hover-layer.visible .hover-layer-cancel {
+  opacity: 1;
+  height: 50%;
+}
+
 .article .article-title {
   text-align: left;
   padding: 16px;
@@ -273,7 +300,8 @@ body {
 }
 
 .category, .category .header-img, .item, .item .header-img,
-.item .options-button, .item .delete-button, .item .edit-button {
+.item .options-button, .item .delete-button, .item .edit-button,
+.item .hover-layer-confirm, .item .hover-layer-cancel {
   -webkit-transition: all .3s ease-out;
   -moz-transition: all 0.3s ease-out;
   -ms-transition: all 0.3s ease-out;

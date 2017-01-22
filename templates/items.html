@@ -31,6 +31,7 @@
 <div class="flex-list">
 {% for item in items %}
   {% set link = '/catalog/' + category.path + '/' + item.label %}
+  {% set delete_link = link + '/delete' %}
   <div class="item-wrapper">
     <article class="item">
       <a class="item-link" href="{{link}}">
@@ -57,6 +58,15 @@
           </div>
         </div>
         {% endif %}
+      </div>
+      <div class="hover-layer">
+        <div class="hover-layer-cancel background-color">
+          Cancel
+        </div>
+        <div class="hover-layer-confirm default-primary-color"
+             data-delete-item="{{delete_link}}">
+          Remove
+        </div>
       </div>
     </article>
   </div>
