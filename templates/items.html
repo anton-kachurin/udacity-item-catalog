@@ -4,7 +4,7 @@
 
 <nav class="navigation">
   <div class="back-button-wrapper">
-    <a href="/catalog">
+    <a href="{{url_for('show_catalog')}}">
       <div class="back-button light-primary-color dark-primary-text">
         <i class="material-icons vertical-align-middle">arrow_back</i>
         <span class="description vertical-align-middle">
@@ -15,7 +15,7 @@
   </div>
   {% if g.current_user %}
   <div class="editor-button-wrapper">
-    <a href="/catalog/{{category.path}}/add">
+    <a href="{{url_for('add_item', category_path=category.path)}}">
       <div class="editor-button accent-color primary-text-color">
         <span class="description vertical-align-middle">
           Add article
@@ -30,9 +30,15 @@
 
 <div class="flex-list">
 {% for item in items %}
-  {% set link = '/catalog/' + category.path + '/' + item.label %}
-  {% set delete_link = link + '/delete' %}
-  {% set edit_link = link + '/edit' %}
+  {% set link = url_for('show_article',
+                  category_path=category.path,
+                  item_label=item.label) %}
+  {% set delete_link = url_for('delete_item',
+                  category_path=category.path,
+                  item_label=item.label) %}
+  {% set edit_link = url_for('edit_item',
+                  category_path=category.path,
+                  item_label=item.label) %}
   <div class="item-wrapper">
     <article class="item">
       <a class="item-link" href="{{link}}">

@@ -6,7 +6,7 @@
 {% for category in categories %}
   <div class="category-wrapper">
     <article class="category">
-      <a href="/catalog/{{category.path}}">
+      <a href="{{url_for('show_category', category_path=category.path)}}">
         <div class="header-img"
              style="
               background-color: {{category.color}};

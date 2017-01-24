@@ -4,7 +4,7 @@
 
 <nav class="navigation">
   <div class="back-button-wrapper">
-    <a href="/catalog/{{category.path}}">
+    <a href="{{url_for('show_category', category_path=category.path)}}">
       <div class="back-button light-primary-color dark-primary-text">
         <i class="material-icons vertical-align-middle">arrow_back</i>
         <span class="description vertical-align-middle">

@@ -35,7 +35,7 @@
               {% if not g.current_user: %}
               <div class="right-side">
                 <a class="login-button text-primary-color"
-                   href="/login">
+                   href="{{url_for('show_login')}}">
                   Login
                 </a>
               </div>
