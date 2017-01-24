@@ -7,6 +7,24 @@ from sqlalchemy.ext.hybrid import hybrid_property
 import sqlite3
 import re
 
+class NotAuthenticated(Exception):
+    """ Raised in case of 401 error:
+        user needs to authenticate themself before performing the operation
+    """
+    pass
+
+class NotAuthorized(Exception):
+    """ Raised in case of 403 error:
+        the operation is forbidden for currently authenticated user
+    """
+    pass
+
+class NotFound(Exception):
+    """ Raised in case of 404 error:
+        an item couldn't be found
+    """
+    pass
+
 def latin_lower(s):
     """ Convert string to lower case,
     replace all non-latin or non-digit symbols with dashes,
@@ -100,8 +118,7 @@ class Category(Base):
     def get_one(cls, path):
         existing = session.query(cls).filter(cls.path==path).first()
         if not existing:
-            # TODO: throw 404 error
-            return None
+            raise NotFound
 
         return existing
 
@@ -149,8 +166,7 @@ class Item(Base):
         if user:
             item.user = user
         else:
-            # TODO: throw 401 error
-            return None
+            raise NotAuthenticated
 
         count = cls.count(category, item.label)
         if count:
@@ -181,8 +197,7 @@ class Item(Base):
     def get_one(cls, category, label):
         existing = cls.query(category, label).first()
         if not existing:
-            # TODO: throw 404 error
-            return None
+            raise NotFound
 
         return existing
 
@@ -191,16 +206,20 @@ class Item(Base):
         return cls.query(category, label).count()
 
     def delete(self, user):
+        if not user:
+            raise NotAuthenticated
+
         if self.user != user:
-            # TODO: throw 403 error
-            return None
+            raise NotAuthorized
 
         session.delete(self)
 
     def edit(self, user, obj):
+        if not user:
+            raise NotAuthenticated
+
         if self.user != user:
-            # TODO: throw 403 error
-            return None
+            raise NotAuthorized
 
         future_label = latin_lower(obj['title'])
         if future_label != self.label:

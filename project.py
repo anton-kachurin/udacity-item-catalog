@@ -6,6 +6,7 @@ from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
 
 from db_scheme import Category, Item, User
+from db_scheme import NotAuthorized, NotAuthenticated, NotFound
 
 G_SECRETS_FILE = 'g_client_secrets.json'
 g_client_secrets = json.loads(open(G_SECRETS_FILE, 'r').read())
@@ -374,6 +375,19 @@ def delete_item(category_path, item_label):
 
     return json_result('deleted successfully', 200)
 
+@app.errorhandler(NotFound)
+def not_found(e):
+    error = "404. Nothing is found for this URL"
+    return render_template('403-404.html', error=error), 404
+
+@app.errorhandler(NotAuthorized)
+def not_found(e):
+    error = "403. You can't perform this action"
+    return render_template('403-404.html', error=error), 403
+
+@app.errorhandler(NotAuthenticated)
+def not_found(e):
+    return render_template('401.html'), 401
 
 if __name__ == '__main__':
     app.secret_key = 'j9in938j2-fin9348u-r2jefw'

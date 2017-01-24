@@ -265,7 +265,7 @@ body {
   margin: 16px;
 }
 
-.back-button, .editor-button, .save-button {
+.back-button, .editor-button, .save-button, .jump-button {
   padding: 16px;
 }
 
@@ -282,7 +282,20 @@ body {
   float: right;
 }
 
-.navigation a {
+.nav-placeholder {
+  height: 32px;
+}
+
+.jump-button-wrapper {
+  text-align: center;
+  margin: 16px;
+}
+
+.jump-button {
+  display: inline-block;
+}
+
+.navigation a, .jump-button-wrapper a {
   text-decoration: none;
 }
 

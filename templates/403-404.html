@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="nav-placeholder">
+
+</div>
+
+<div class="error-message warning-color text-primary-color">
+  {{error}}
+</div>
+
+<div class="jump-button-wrapper">
+  <a href="{{url_for('show_catalog')}}">
+    <div class="jump-button light-primary-color dark-primary-text">
+      <span class="vertical-align-middle">To main page</span>
+      <i class="material-icons vertical-align-middle">arrow_forward</i>
+    </div>
+  </a>
+</div>
+
+{% endblock %}
