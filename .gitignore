@@ -1,7 +1,8 @@
 .vagrant/
 Vagrantfile
-catalog.db
 *.pyc
+catalog.db
+catalog.db-journal
+config.py
 fb_client_secrets.json
 g_client_secrets.json
-catalog.db-journal

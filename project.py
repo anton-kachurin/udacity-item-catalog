@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask import jsonify, session, make_response, g
 
-import random, string, json, httplib2, requests
+import os, random, string, json, httplib2, requests
 
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
@@ -436,7 +436,9 @@ def not_found(e):
 def not_found(e):
     return render_template('401.html'), 401
 
+APP_CONFIG_FILE = 'config' #.py
+
 if __name__ == '__main__':
-    app.secret_key = 'j9in938j2-fin9348u-r2jefw'
-    app.debug = True
+    if os.path.isfile(APP_CONFIG_FILE + '.py'):
+        app.config.from_object(APP_CONFIG_FILE)
     app.run(host='0.0.0.0', port=5000)
