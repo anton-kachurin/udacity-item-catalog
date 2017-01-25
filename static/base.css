@@ -18,16 +18,19 @@ body {
   height: auto !important;
   height: 100%;
   /* Negative indent footer by it's height */
-  margin: 0 auto -100px;
+  margin: 0 auto -45px;
 }
 
 /* Set the fixed height of the footer here */
 #push,
 #footer {
-  height: 90px;
-  max-width: 720px;
-  margin: auto;
-  clear: both;
+  height: 45px;
+}
+
+#footer {
+  line-height: 45px;
+  text-align: right;
+  padding-right: 16px;
 }
 
 .no-bottom-margin {
@@ -110,7 +113,11 @@ body {
   background-repeat: no-repeat;
 }
 
-.category, .item, .article, #main-header {
+.article {
+  margin-bottom: 32px;
+}
+
+.category, .item, .article, #main-header, #footer {
   box-shadow: 0 1px 10px #696969;
   overflow: hidden;
   position: relative;
