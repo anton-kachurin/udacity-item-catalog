@@ -29,6 +29,9 @@ def json_result(message, code=401):
 
     return response
 
+def json_not_found():
+    return json_result('no results found', 404)
+
 def field_list():
     """ List of required fields of an article """
     return [
@@ -390,6 +393,34 @@ def delete_item(category_path, item_label):
     item.delete(g.current_user)
 
     return json_result('deleted successfully', 200)
+
+# JSON endpoints
+@app.route('/JSON/catalog')
+def all_categories_JSON():
+    categories = Category.get_all()
+
+    return jsonify(categoryList=[category.serialized
+                                for category in categories])
+
+@app.route('/JSON/catalog/<string:category_path>')
+def items_of_category_JSON(category_path):
+    try:
+        category = Category.get_one(category_path)
+        items = Item.get_all(category)
+
+        return jsonify(itemList=[item.serialized for item in items])
+    except NotFound:
+        return json_not_found()
+
+@app.route('/JSON/catalog/<string:category_path>/<string:item_label>')
+def item_JSON(category_path, item_label):
+    try:
+        category = Category.get_one(category_path)
+        item = Item.get_one(category, item_label)
+
+        return jsonify(item.serialized)
+    except NotFound:
+        return json_not_found()
 
 @app.errorhandler(NotFound)
 def not_found(e):

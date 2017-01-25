@@ -172,6 +172,7 @@ class Item(Base):
         obj = {
             'id': self.id,
             'title': self.title,
+            'label': self.label,
             'author': self.author,
             'source': self.source,
             'image': self.image,
