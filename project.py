@@ -1,5 +1,6 @@
-from flask import Flask, render_template, request, redirect, url_for, flash,\
-                  jsonify, session, make_response, g
+from flask import Flask, render_template, request, redirect, url_for
+from flask import jsonify, session, make_response, g
+
 import random, string, json, httplib2, requests
 
 from oauth2client.client import flow_from_clientsecrets
@@ -8,11 +9,13 @@ from oauth2client.client import FlowExchangeError
 from db_scheme import Category, Item, User
 from db_scheme import NotAuthorized, NotAuthenticated, NotFound
 
+# constants for Google Plus oAuth2
 G_SECRETS_FILE = 'g_client_secrets.json'
 g_client_secrets = json.loads(open(G_SECRETS_FILE, 'r').read())
 G_CLIENT_ID = g_client_secrets['web']['client_id']
 REDIRECT_URI = 'postmessage'
 
+# constansts for Facebook aAuth2
 FB_SECRETS_FILE = 'fb_client_secrets.json'
 fb_client_secrets = json.loads(open(FB_SECRETS_FILE, 'r').read())
 FB_CLIENT_ID = fb_client_secrets['web']['app_id']
@@ -20,12 +23,14 @@ FB_CLIENT_ID = fb_client_secrets['web']['app_id']
 app = Flask(__name__)
 
 def json_result(message, code=401):
+    """ Generate JSON response with given message and HTTP code """
     response = make_response(json.dumps(message), code)
     response.headers['Content-Type'] = 'application/json'
 
     return response
 
 def field_list():
+    """ List of required fields of an article """
     return [
         {'name': 'title', 'label': 'Title'},
         {'name': 'author', 'label': 'Author'},
@@ -48,18 +53,20 @@ def extend_fields_with_value(fields, title, author, source, image, text):
             field['value'] = text
 
 def is_url(url):
+    """ Check if given string is a valid URL """
     url = url.lower()
     return url.startswith('http://') or url.startswith('https://')
 
 def check_request_fields(fields):
+    """ Get parameters from `request` object and check it's validity;
+    return error message if it's invalid;
+    otherwise, extend `fields` object with parameter values and return `None`.
+    """
     title = request.form.get('title')
     author = request.form.get('author')
     source = request.form.get('source')
     image = request.form.get('image')
     text = request.form.get('text')
-
-    extend_fields_with_value(fields=fields, title=title, author=author,
-                             source=source, image=image, text=text)
 
     error = ''
 
@@ -70,19 +77,22 @@ def check_request_fields(fields):
     if not is_url(source):
         error = 'Please provide a valid link to the original article'
 
-    return error
-
-def create_or_get_user():
-    # User.create will make sure not to create duplicate entry in db, see source
-    return User.create(username=session.get('username'),
-                       email=session.get('email'),
-                       picture=session.get('picture'))
+    if error:
+        return error
+    else:
+        extend_fields_with_value(fields=fields, title=title, author=author,
+                                 source=source, image=image, text=text)
+        return None
 
 @app.before_request
 def before_request():
+    """ Set g.current_user property before any view function will run """
     if 'email' in session:
         # user is logged in, use its email to get user from db
-        g.current_user = create_or_get_user()
+        # User.create will make sure not to create duplicate entry in db
+        g.current_user = User.create(username=session.get('username'),
+                                     email=session.get('email'),
+                                     picture=session.get('picture'))
     else:
         g.current_user = None
 
@@ -242,6 +252,10 @@ def fbdisconnect():
 
 @app.route('/force_logout', methods=["POST"])
 def force_logout():
+    """ Make server to clean session data for current user when
+    regular disconnect fails. This will allow to get new oAuth credentials
+    later, i.e to relogin
+    """
     del session['username']
     del session['picture']
     del session['email']
@@ -256,7 +270,9 @@ def force_logout():
 
 @app.route('/logout', methods=["POST"])
 def disconnect():
-    # TODO: add confirmation page
+    """ Recognize what authorization option is currently being used,
+    and try to revoke authorization via corresponding provider
+    """
     if 'provider' in session:
         provider = session.get('provider')
 

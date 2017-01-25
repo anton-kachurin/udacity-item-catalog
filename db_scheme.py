@@ -1,11 +1,10 @@
 from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import func, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
-from sqlalchemy import func, create_engine
 from sqlalchemy.ext.hybrid import hybrid_property
 
-import sqlite3
-import re
+import sqlite3, re
 
 class NotAuthenticated(Exception):
     """ Raised in case of 401 error:
@@ -55,10 +54,16 @@ class User(Base):
 
     @classmethod
     def by_email(cls, email):
+        """ Retrieve User entry by given email;
+        return `None` or an object
+        """
         return session.query(cls).filter_by(email=email).first()
 
     @classmethod
     def create(cls, email, username, picture):
+        """ Create a new User entry and return it;
+        if entry with given email already exists, just return it
+        """
         existing = cls.by_email(email)
         if not existing:
             user = cls(username=username, email=email, picture=picture)
@@ -76,6 +81,7 @@ class Category(Base):
     image = Column(String(50), nullable=False)
     color = Column(String(6), nullable=False)
 
+    # `path` is a URI-compatible version of `title` property
     @hybrid_property
     def path(self):
         return latin_lower(self.title)
@@ -84,6 +90,8 @@ class Category(Base):
     def path(cls):
         return func.latin_lower(cls.title)
 
+    # the first symbol of the `title` by default,
+    # but an empty string if `image` is not empty
     @property
     def initial(self):
         if not self.image:
@@ -91,8 +99,9 @@ class Category(Base):
         else:
             return ''
 
+    # JSON representation of the entry, with decorative properties left out
     @property
-    def serialize(self):
+    def serialized(self):
         obj = {
             'id': self.id,
             'title': self.title,
@@ -102,6 +111,7 @@ class Category(Base):
 
     @classmethod
     def add_all(cls, obj):
+        """ Create Category entries by given list """
         for item in obj:
             category = cls(**item)
             session.add(category)
@@ -110,12 +120,16 @@ class Category(Base):
 
     @classmethod
     def get_all(cls):
+        """ Get all entries """
         categories = session.query(cls).all()
 
         return categories
 
     @classmethod
     def get_one(cls, path):
+        """ Retrieve one entry by given `path`;
+        error is raised if nothing is found
+        """
         existing = session.query(cls).filter(cls.path==path).first()
         if not existing:
             raise NotFound
@@ -138,6 +152,7 @@ class Item(Base):
     user_id = Column(Integer, ForeignKey('users.id'))
     user = relationship(User)
 
+    # `label` is URI-compatible version of `title` property
     @hybrid_property
     def label(self):
         return latin_lower(self.title)
@@ -146,23 +161,34 @@ class Item(Base):
     def label(cls):
         return func.latin_lower(cls.title)
 
+    # the first letter of the `text` property
     @property
     def initial(self):
         return self.text[:1]
 
+    # JSON representation of the entry
     @property
-    def serialize(self):
+    def serialized(self):
         obj = {
             'id': self.id,
             'title': self.title,
             'author': self.author,
             'source': self.source,
+            'image': self.image,
             'text': self.text
         }
         return obj
 
     @classmethod
     def add(cls, user, category, item):
+        """ Add `user` and `category` properties to given Item entry
+        and save it to db;
+        `category` is expected to be a valid Category entry;
+        `user` might be missing, an exception is raised in that case;
+        properties of Item entry are checked before saving
+
+        return non-empty string if some properties are invalid, `None` otherwise
+        """
         if user:
             item.user = user
         else:
@@ -183,6 +209,9 @@ class Item(Base):
 
     @classmethod
     def query(cls, category, label=None):
+        """ Construct `query` object filtered by given Category entry,
+        and optionally by `label` value
+        """
         result = session.query(cls).filter(cls.category==category)
         if label:
             result = result.filter(cls.label==label)
@@ -191,10 +220,14 @@ class Item(Base):
 
     @classmethod
     def get_all(cls, category):
+        """ Get all entries by the given Category entry """
         return cls.query(category).all()
 
     @classmethod
     def get_one(cls, category, label):
+        """ Get one entry filtered by given Category entry and `label`;
+        error is raised if nothing is found
+        """
         existing = cls.query(category, label).first()
         if not existing:
             raise NotFound
@@ -203,9 +236,16 @@ class Item(Base):
 
     @classmethod
     def count(cls, category, label=None):
+        """ Count entries with given Category entry and `label` """
         return cls.query(category, label).count()
 
     def delete(self, user):
+        """ Delete current entry from db.
+        `user` parameter defines on whom behalf this operation is attempted.
+
+        `self.user` and `user` parameter must match to finish the operation,
+        otherwise exception will be raised
+        """
         if not user:
             raise NotAuthenticated
 
@@ -215,6 +255,17 @@ class Item(Base):
         session.delete(self)
 
     def edit(self, user, obj):
+        """ Edit current entry in db.
+        `user` parameter defines on whom behalf this operation is attempted;
+        `obj` represents required changes.
+
+        `self.user` and `user` parameter must match to finish the operation,
+        otherwise exception will be raised;
+        `obj` is inspected before applying any changes,
+        if one of it's properties is invalid, an error string returned
+
+        return values are `None` or a non-empty error string
+        """
         if not user:
             raise NotAuthenticated
 
