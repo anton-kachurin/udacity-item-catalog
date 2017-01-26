@@ -38,13 +38,14 @@ $('.item .options-panel .delete-button').on('click', function(event){
 });
 
 // 'cancel' button on the 'delete confirmation' hover layer clicked
-$('.hover-layer .hover-layer-cancel').on('click', function(event){
+$('.hover-layer.visible .hover-layer-cancel').on('click', function(event){
   var target = $(event.target).parents('.hover-layer');
   // hide the hover layer
   target.removeClass('visible');
 });
 
-$('.hover-layer .hover-layer-confirm').on('click', function(event){
+// 'confirm' button on the 'delete confirmation' hover layer clicked
+$('.hover-layer.visible .hover-layer-confirm').on('click', function(event){
   var element = $(event.target);
   // retrieve a 'delete' URL from 'delete-data' attribute
   var url = element.data('delete-item');
