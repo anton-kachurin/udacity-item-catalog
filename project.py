@@ -438,7 +438,8 @@ def not_found(e):
 
 APP_CONFIG_FILE = 'config' #.py
 
+if os.path.isfile(APP_CONFIG_FILE + '.py'):
+    app.config.from_object(APP_CONFIG_FILE)
+
 if __name__ == '__main__':
-    if os.path.isfile(APP_CONFIG_FILE + '.py'):
-        app.config.from_object(APP_CONFIG_FILE)
     app.run(host='0.0.0.0', port=5000)
