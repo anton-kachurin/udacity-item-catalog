@@ -38,7 +38,7 @@ def latin_lower(s):
     return result;
 
 def engine_creator():
-    con = sqlite3.connect('catalog.db')
+    con = sqlite3.connect('catalog.db', check_same_thread=False)
     con.create_function("latin_lower", 1, latin_lower)
     return con
 
