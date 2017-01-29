@@ -6,8 +6,16 @@ Use -i (or --items) argument to register a fake user and add some articles.
 
 import os, sys, getopt
 
+
+FILE_BUSY = False
 if os.path.isfile('./catalog.db'):
-    os.remove('catalog.db')
+    try:
+        os.remove('catalog.db')
+    except OSError as e:
+        if e.errno == 26:
+            FILE_BUSY = True
+        else:
+            raise
 
 from db_scheme import Item, Category, User
 
@@ -95,12 +103,15 @@ def main(argv, program_name):
         if opt in ("-i", "--items"):
             need_items = True
 
-    # first add categories
-    add_categories()
+    if not FILE_BUSY:
+        # first add categories
+        add_categories()
 
-    # add items only if necessary
-    if need_items:
-        add_items()
+        # add items only if necessary
+        if need_items:
+            add_items()
+    else:
+        print 'Database file is busy, no changes were made'
 
 def add_categories():
     Category.add_all(categories)
