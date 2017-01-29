@@ -17,25 +17,43 @@ and SQLAlchemy ORM.
 
 Assuming Ubuntu is used:
 
-1. Install Flask, SQLAlchemy, and pip:
+1. Install Flask, PostgreSQL with its PL/Python extension, SQLAlchemy, and pip:
   ```
-  apt-get -qqy update
-  apt-get -qqy install python-flask python-sqlalchemy
-  apt-get -qqy install python-pip
+  sudo apt-get -qqy update &&
+  sudo apt-get -qqy upgrade &&
+  sudo apt-get -qqy install postgresql python-psycopg2 postgresql-plpython &&
+  sudo apt-get -qqy install python-flask python-sqlalchemy &&
+  sudo apt-get -qqy install python-pip
   ```
 
 2. Required pip packages:
   ```
-  pip install bleach
-  pip install oauth2client
-  pip install requests
-  pip install httplib2
-  pip install redis
-  pip install passlib
-  pip install itsdangerous
-  pip install flask-httpauth
+  sudo pip install bleach &&
+  sudo pip install oauth2client &&
+  sudo pip install requests &&
+  sudo pip install httplib2 &&
+  sudo pip install redis &&
+  sudo pip install passlib &&
+  sudo pip install itsdangerous &&
+  sudo pip install flask-httpauth
   ```
-3. After copying files to the server, populate the database with categories:
+
+3. After copying files to the server, create a database and populate it:
+  ```
+  sudo su postgres
+  psql
+
+  CREATE USER catalog WITH PASSWORD 'password';
+  CREATE DATABASE catalog;
+  GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO catalog;
+
+  \c catalog
+
+  CREATE EXTENSION plpythonu;
+  UPDATE pg_language SET lanpltrusted = true WHERE lanname = 'plpythonu';
+  \q
+  exit
+  ```
 
   `./populate_db.py`
 
