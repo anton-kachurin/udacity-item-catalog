@@ -1,22 +1,10 @@
 #!/usr/bin/python
-""" Clear 'catalog.db' and populate it with some data.
+""" Populate catalog database with some data.
 Run this script without any parameters to add default categories to db.
 Use -i (or --items) argument to register a fake user and add some articles.
 """
 
-import os, sys, getopt
-
-
-FILE_BUSY = False
-if os.path.isfile('./catalog.db'):
-    try:
-        os.remove('catalog.db')
-    except OSError as e:
-        if e.errno == 26:
-            FILE_BUSY = True
-        else:
-            raise
-
+import sys, getopt
 from db_scheme import Item, Category, User
 
 categories = [
@@ -103,15 +91,12 @@ def main(argv, program_name):
         if opt in ("-i", "--items"):
             need_items = True
 
-    if not FILE_BUSY:
-        # first add categories
-        add_categories()
+    # first add categories
+    add_categories()
 
-        # add items only if necessary
-        if need_items:
-            add_items()
-    else:
-        print 'Database file is busy, no changes were made'
+    # add items only if necessary
+    if need_items:
+        add_items()
 
 def add_categories():
     Category.add_all(categories)

@@ -3,8 +3,10 @@ from sqlalchemy import func, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.schema import DDL
+import sqlalchemy
 
-import sqlite3, re
+import inspect
 
 class NotAuthenticated(Exception):
     """ Raised in case of 401 error:
@@ -29,6 +31,8 @@ def latin_lower(s):
     replace all non-latin or non-digit symbols with dashes,
     deduplicate and trim dashes
     """
+    import re
+
     result = s.lower()
     result = re.sub("[^a-z0-9]", '-', result)
     result = re.sub("-+", '-', result)
@@ -37,12 +41,32 @@ def latin_lower(s):
 
     return result;
 
-def engine_creator():
-    con = sqlite3.connect('catalog.db', check_same_thread=False)
-    con.create_function("latin_lower", 1, latin_lower)
-    return con
+def get_function_body(func):
+    """ Get a function source as text excluding the first line
+    """
+    lines, first_line = inspect.getsourcelines(func)
+
+    function_body = ''
+    for i in range (1, len(lines)):
+            function_body += lines[i]
+
+    return function_body
+
+def convert_to_pl_python(func):
+    head = ('CREATE OR REPLACE FUNCTION %s (s text)\n'
+            '    RETURNS text\n'
+            'AS $$\n')
+    foot = '\n$$ LANGUAGE plpythonu;'
+
+    return head % func.func_name + get_function_body(func) + foot
 
 Base = declarative_base()
+
+sqlalchemy.event.listen(
+    Base.metadata,
+    'before_create',
+    DDL(convert_to_pl_python(latin_lower))
+)
 
 class User(Base):
     __tablename__ = 'users'
@@ -79,7 +103,7 @@ class Category(Base):
     id = Column(Integer, primary_key=True)
     title = Column(String(50), nullable=False)
     image = Column(String(50), nullable=False)
-    color = Column(String(6), nullable=False)
+    color = Column(String(7), nullable=False)
 
     # `path` is a URI-compatible version of `title` property
     @hybrid_property
@@ -295,7 +319,7 @@ class Item(Base):
 
         return None
 
-engine = create_engine('sqlite://', creator=engine_creator)
+engine = create_engine('postgresql://catalog:password@localhost/catalog')
 
 Base.metadata.create_all(engine)
 
