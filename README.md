@@ -45,10 +45,10 @@ Assuming Ubuntu is used:
 
   CREATE USER catalog WITH PASSWORD 'password';
   CREATE DATABASE catalog;
-  GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO catalog;
 
   \c catalog
 
+  GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO catalog;
   CREATE EXTENSION plpythonu;
   UPDATE pg_language SET lanpltrusted = true WHERE lanname = 'plpythonu';
   \q
@@ -67,7 +67,20 @@ Assuming Ubuntu is used:
   SECRET_KEY = 'a-secret-key-of-your-choice-here'
   ```
 
-5. Run the project:
+5. Create files `g_client_secrets.json`(must be generated and downloaded from [Google Developer's Console](https://console.developers.google.com))
+and `fb_client_secrets.json`(generate credentials at [Facebook for Developers](https://developers.facebook.com/)).
+
+  ```
+  nano fb_client_secrets.json
+  {
+    "web": {
+      "app_id": "your-app-id",
+      "app_secret": "your-app-secret"
+    }
+  }
+  ```
+
+6. Run the project:
 
   `python project.py`
 
