@@ -71,6 +71,9 @@ def check_request_fields(fields):
     image = request.form.get('image')
     text = request.form.get('text')
 
+    extend_fields_with_value(fields=fields, title=title, author=author,
+                             source=source, image=image, text=text)
+
     error = ''
 
     if not title or not author or not text or not source or not image:
@@ -83,8 +86,6 @@ def check_request_fields(fields):
     if error:
         return error
     else:
-        extend_fields_with_value(fields=fields, title=title, author=author,
-                                 source=source, image=image, text=text)
         return None
 
 @app.before_request
