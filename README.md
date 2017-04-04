@@ -84,6 +84,16 @@ and `fb_client_secrets.json`(generate credentials at [Facebook for Developers](h
 
   `python project.py`
 
+### Privacy Policy
+
+This website requires the following information from the user: name, email
+address and profile picture. This information is used only for registration
+and authentication, and will never be aggregated and given to any
+third party (unless required by law).
+
+It also will not be used to contact users by the website owner without
+asking for explicit consent.
+
 ### License
 
 Anton Kachurin, 2017, [Apache License v2.0](http://www.apache.org/licenses/LICENSE-2.0)
