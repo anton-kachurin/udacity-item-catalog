@@ -86,7 +86,7 @@ and `fb_client_secrets.json`(generate credentials at [Facebook for Developers](h
 
 ### License
 
-Anton Kachurin, 2016, [Apache License v2.0](http://www.apache.org/licenses/LICENSE-2.0)
+Anton Kachurin, 2017, [Apache License v2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
 ### Credits
 
